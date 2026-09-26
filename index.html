@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VisualG — Exercícios</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/theme.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/motion.css">
+</head>
+<body>
+<header id="cabecalho">
+  <a id="marca" href="#/">VisualG <b>Exercícios</b></a>
+  <span id="status" class="status" role="status" aria-live="polite">Pronto</span>
+</header>
+<main>
+  <section id="tela-home">
+    <h1 id="titulo-projeto">Exercícios de Algoritmos — VisualG</h1>
+    <p class="subtitulo">Manzano e Faccat: abra um exercício, edite o código e execute direto no navegador.</p>
+    <a class="playground" href="#/ex/playground">
+      <span class="playground-icone" aria-hidden="true"></span>
+      <span class="playground-txt"><strong>Playground</strong><small>Escreva e execute um algoritmo livre</small></span>
+    </a>
+    <div class="campo-busca" role="search">
+      <input id="busca" type="search" placeholder="Buscar por id ou descrição..." autocomplete="off" aria-label="Buscar exercício">
+    </div>
+    <div id="aviso" class="aviso" hidden></div>
+    <div id="lista-grupos"></div>
+  </section>
+  <section id="tela-exercicio" hidden>
+    <div class="barra-ex">
+      <a id="btn-voltar" href="#/"><span class="voltar-icone" aria-hidden="true"></span>Voltar</a>
+      <h2 id="ex-titulo"></h2>
+      <span id="ex-badge" class="badge"></span>
+    </div>
+    <p id="ex-descricao" class="ex-descricao"></p>
+    <div class="editor-wrap">
+      <label class="rotulo-visual-oculto" for="editor">Código do exercício em VisuAlg</label>
+      <pre id="editor-pre" aria-hidden="true"></pre>
+      <textarea id="editor" spellcheck="false" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+    </div>
+    <div class="botoes">
+      <div class="btn-group" role="group" aria-label="Ações do exercício">
+        <button id="btn-executar" class="btn primario" type="button"><span class="btn-icone" aria-hidden="true"></span>Executar</button>
+        <button id="btn-parar" class="btn tonal" type="button" disabled><span class="btn-icone" aria-hidden="true"></span>Parar</button>
+        <button id="btn-limpar" class="btn outlined" type="button"><span class="btn-icone" aria-hidden="true"></span>Limpar</button>
+      </div>
+      <button id="btn-restaurar" class="btn texto" type="button"><span class="btn-icone" aria-hidden="true"></span>Restaurar original</button>
+    </div>
+    <div class="console">
+      <div class="console-topo">Console</div>
+      <pre id="console-saida" role="log" aria-live="polite"></pre>
+      <div id="console-entrada" class="console-entrada" hidden>
+        <label class="rotulo-visual-oculto" for="console-input">Resposta do comando leia</label>
+        <span id="console-dica"></span>
+        <input id="console-input" type="text" autocomplete="off" spellcheck="false" placeholder="sua resposta">
+      </div>
+    </div>
+  </section>
+</main>
+<script src="data/exercises.js"></script>
+<script src="interpreter/lexer.js"></script>
+<script src="interpreter/parser.js"></script>
+<script src="interpreter/interpreter.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

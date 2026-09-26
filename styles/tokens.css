@@ -1,0 +1,193 @@
+:root {
+  --md-sys-font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --md-sys-font-family-brand: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --md-sys-font-size-base: 15px;
+}
+:root {
+  --md-sys-type-display-large-size: 57px;
+  --md-sys-type-display-large-line-height: 64px;
+  --md-sys-type-display-large-weight: 400;
+  --md-sys-type-display-large-tracking: -0.25px;
+  --md-sys-type-display-medium-size: 45px;
+  --md-sys-type-display-medium-line-height: 52px;
+  --md-sys-type-display-medium-weight: 400;
+  --md-sys-type-display-medium-tracking: 0px;
+  --md-sys-type-display-small-size: 36px;
+  --md-sys-type-display-small-line-height: 44px;
+  --md-sys-type-display-small-weight: 400;
+  --md-sys-type-display-small-tracking: 0px;
+  --md-sys-type-headline-large-size: 32px;
+  --md-sys-type-headline-large-line-height: 40px;
+  --md-sys-type-headline-large-weight: 400;
+  --md-sys-type-headline-large-tracking: 0px;
+  --md-sys-type-headline-medium-size: 28px;
+  --md-sys-type-headline-medium-line-height: 36px;
+  --md-sys-type-headline-medium-weight: 400;
+  --md-sys-type-headline-medium-tracking: 0px;
+  --md-sys-type-headline-small-size: 24px;
+  --md-sys-type-headline-small-line-height: 32px;
+  --md-sys-type-headline-small-weight: 400;
+  --md-sys-type-headline-small-tracking: 0px;
+  --md-sys-type-title-large-size: 22px;
+  --md-sys-type-title-large-line-height: 28px;
+  --md-sys-type-title-large-weight: 400;
+  --md-sys-type-title-large-tracking: 0px;
+  --md-sys-type-title-medium-size: 16px;
+  --md-sys-type-title-medium-line-height: 24px;
+  --md-sys-type-title-medium-weight: 500;
+  --md-sys-type-title-medium-tracking: 0.15px;
+  --md-sys-type-title-small-size: 14px;
+  --md-sys-type-title-small-line-height: 20px;
+  --md-sys-type-title-small-weight: 500;
+  --md-sys-type-title-small-tracking: 0.1px;
+  --md-sys-type-body-large-size: 16px;
+  --md-sys-type-body-large-line-height: 24px;
+  --md-sys-type-body-large-weight: 400;
+  --md-sys-type-body-large-tracking: 0.5px;
+  --md-sys-type-body-medium-size: 14px;
+  --md-sys-type-body-medium-line-height: 20px;
+  --md-sys-type-body-medium-weight: 400;
+  --md-sys-type-body-medium-tracking: 0.25px;
+  --md-sys-type-body-small-size: 12px;
+  --md-sys-type-body-small-line-height: 16px;
+  --md-sys-type-body-small-weight: 400;
+  --md-sys-type-body-small-tracking: 0.4px;
+  --md-sys-type-label-large-size: 14px;
+  --md-sys-type-label-large-line-height: 20px;
+  --md-sys-type-label-large-weight: 500;
+  --md-sys-type-label-large-tracking: 0.1px;
+  --md-sys-type-label-medium-size: 12px;
+  --md-sys-type-label-medium-line-height: 16px;
+  --md-sys-type-label-medium-weight: 500;
+  --md-sys-type-label-medium-tracking: 0.5px;
+  --md-sys-type-label-small-size: 11px;
+  --md-sys-type-label-small-line-height: 16px;
+  --md-sys-type-label-small-weight: 500;
+  --md-sys-type-label-small-tracking: 0.5px;
+}
+:root {
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+}
+:root {
+  --md-sys-elevation-0: none;
+  --md-sys-elevation-1:
+    0 1px 2px 0 rgba(45, 33, 18, 0.10),
+    0 1px 3px 1px rgba(45, 33, 18, 0.06);
+  --md-sys-elevation-2:
+    0 1px 2px 0 rgba(45, 33, 18, 0.12),
+    0 2px 6px 2px rgba(45, 33, 18, 0.08);
+  --md-sys-elevation-3:
+    0 4px 8px 3px rgba(45, 33, 18, 0.10),
+    0 1px 3px 0 rgba(45, 33, 18, 0.10);
+  --md-sys-elevation-4:
+    0 6px 10px 4px rgba(45, 33, 18, 0.12),
+    0 2px 3px 0 rgba(45, 33, 18, 0.12);
+  --md-sys-elevation-5:
+    0 8px 12px 6px rgba(45, 33, 18, 0.14),
+    0 4px 4px 0 rgba(45, 33, 18, 0.12);
+}
+:root {
+  --md-sys-spacing-1: 4px;
+  --md-sys-spacing-2: 8px;
+  --md-sys-spacing-3: 12px;
+  --md-sys-spacing-4: 16px;
+  --md-sys-spacing-5: 20px;
+  --md-sys-spacing-6: 24px;
+  --md-sys-spacing-7: 32px;
+  --md-sys-spacing-8: 40px;
+  --md-sys-spacing-9: 48px;
+  --md-sys-spacing-10: 56px;
+  --md-sys-spacing-11: 64px;
+  --md-sys-spacing-12: 80px;
+}
+:root {
+  --md-sys-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-spring-spatial-fast: cubic-bezier(0.42, 1.67, 0.21, 0.90);
+  --md-sys-motion-easing-spring-spatial-default: cubic-bezier(0.38, 1.21, 0.22, 1.00);
+  --md-sys-motion-easing-spring-spatial-slow: cubic-bezier(0.39, 1.29, 0.35, 0.98);
+  --md-sys-motion-easing-spring-effects-fast: cubic-bezier(0.31, 0.94, 0.34, 1.00);
+  --md-sys-motion-easing-spring-effects-default: cubic-bezier(0.34, 0.80, 0.34, 1.00);
+  --md-sys-motion-easing-spring-effects-slow: cubic-bezier(0.34, 0.88, 0.34, 1.00);
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+  --md-sys-motion-duration-extra-long1: 700ms;
+  --md-sys-motion-duration-extra-long2: 800ms;
+  --md-sys-motion-duration-extra-long3: 900ms;
+  --md-sys-motion-duration-extra-long4: 1000ms;
+}
+:root {
+  --md-sys-state-hover-opacity: 0.08;
+  --md-sys-state-focus-opacity: 0.10;
+  --md-sys-state-press-opacity: 0.12;
+  --md-sys-state-drag-opacity: 0.16;
+}
+:root {
+  --md-sys-z-background: 0;    
+  --md-sys-z-decorative: 0;    
+  --md-sys-z-behind: -1;       
+  --md-sys-z-state-layer: 1;   
+  --md-sys-z-content: 1;       
+  --md-sys-z-input: 2;         
+  --md-sys-z-sticky: 100;      
+  --md-sys-z-overlay: 200;     
+}
+:root {
+  --md-sys-appbar-height: 64px;
+  --md-sys-appbar-height-compact: 56px;
+  --md-sys-appbar-padding-inline: clamp(
+    var(--md-sys-spacing-3),
+    4vw,
+    var(--md-sys-spacing-8)
+  );
+  --md-sys-searchbar-height: 56px;
+  --md-sys-touch-target-min: 40px;
+  --md-sys-touch-target-btn: 48px;
+  --md-sys-touch-target-inline: 24px;
+  --md-sys-progress-indicator-size: 16px;
+  --md-sys-icon-size-btn: 20px;
+}
+:root {
+  --md-ex-painel-max: 1440px;
+  --md-sys-content-max: 980px;
+  --md-ex-leitura-max: 68ch;
+  --md-ex-editor-min: clamp(280px, 40vh, 460px);
+  --md-ex-console-min: clamp(170px, 26vh, 300px);
+  --md-ex-console-max: clamp(280px, 52vh, 640px);
+}
+@supports (height: 100dvh) {
+  :root {
+    --md-ex-editor-min: clamp(280px, 40dvh, 460px);
+    --md-ex-console-min: clamp(170px, 26dvh, 300px);
+    --md-ex-console-max: clamp(280px, 52dvh, 640px);
+  }
+}
+:root {
+  --md-ext-code-font: Consolas, "Courier New", monospace;
+  --md-ext-code-size: 14px;
+  --md-ext-code-line-height: 1.5;
+  --md-ext-code-padding: 12px;
+  --md-ext-code-tab-size: 4;
+  --md-ext-code-letter-spacing: 0px;
+  --md-ext-code-scrollbar-size: 10px;
+  --md-ext-code-line-box: 21px;
+}
