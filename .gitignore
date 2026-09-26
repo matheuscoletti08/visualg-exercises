@@ -1,0 +1,16 @@
+# Extracoes de texto das apostilas, geradas a partir dos PDFs.
+# Sao artefato de leitura/pesquisa, nao fonte do site: os exercicios
+# vivem nos .alg e o gerador so le os .alg.
+*.txt
+
+# Sistema operacional e editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# Node (o projeto nao tem dependencia, mas cobre o caso de alg tool local)
+node_modules/
