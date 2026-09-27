@@ -148,7 +148,9 @@
   --md-sys-z-state-layer: 1;   
   --md-sys-z-content: 1;       
   --md-sys-z-input: 2;         
-  --md-sys-z-sticky: 100;      
+  --md-sys-z-sticky: 100;
+--md-sys-z-sticky-sub: 90;
+--md-sys-gutter-mobile: 10px;      
   --md-sys-z-overlay: 200;     
 }
 :root {

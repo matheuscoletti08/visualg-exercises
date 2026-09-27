@@ -449,6 +449,7 @@ main {
   border-radius: var(--md-sys-shape-corner-full);
 }
 .badge[data-cat="geral"]::before,
+.badge[data-cat="sequencial"]::before,
 .badge[data-cat^="p"]::before {
   border-radius: var(--md-sys-shape-corner-full);
 }
@@ -1166,9 +1167,95 @@ main {
     var(--md-sys-motion-easing-spring-spatial-fast) forwards;
 }
 @media (max-width: 640px) {
-  main { padding: var(--md-sys-spacing-4) 10px 40px; }
+  main { padding: var(--md-sys-spacing-4) var(--md-sys-gutter-mobile) 40px; }
   #cabecalho { min-height: var(--md-sys-appbar-height-compact); }
   .cards { grid-template-columns: 1fr; }
+
+  /* ---- home em lista ----
+     Em tela estreita o grid de 1 coluna estica cada card para a
+     largura toda e sobra quase nada dentro dele. Card em grade e
+     para conteudo visual; lista e para conteudo denso. A partir
+     daqui o exercicio vira uma linha: id + badge, enunciado em
+     2 linhas, divisor no lugar da caixa. */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .card {
+    --md-card-surface: transparent;
+    --md-card-surface-hover: transparent;
+    --md-card-surface-press: var(--md-sys-color-surface-container);
+    --md-card-shape-rest: 0;
+    --md-sys-shape-press-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 64px;
+    padding: var(--md-sys-spacing-3) var(--md-sys-spacing-2);
+    box-shadow: none;
+    border-radius: 0;
+    /* divisor: box-shadow nao ocupa layout, entao nao muda a altura da linha */
+    box-shadow: inset 0 -1px 0 var(--md-sys-color-outline-variant);
+  }
+  .card:last-child { box-shadow: none; }
+  .card:hover { box-shadow: inset 0 -1px 0 var(--md-sys-color-outline-variant); }
+  .card:focus-visible {
+    outline-offset: -2px;
+    background: var(--md-sys-color-surface-container);
+  }
+  .card:active { background: var(--md-sys-color-surface-container-high); }
+  .card-topo { align-items: baseline; }
+  .card-titulo {
+    font-size: var(--md-sys-type-title-medium-size);
+    line-height: var(--md-sys-type-title-medium-line-height);
+  }
+  .card-desc {
+    margin-top: var(--md-sys-spacing-1);
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: clip;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* o cabecalho do grupo gruda embaixo da app bar: sem isso, num rolagem
+     de 95 linhas voce perde a referencia de onde esta */
+  .grupo-cabecalho {
+    position: sticky;
+    top: var(--md-sys-appbar-height-compact);
+    z-index: var(--md-sys-z-sticky-sub);
+    margin-inline: calc(-1 * var(--md-sys-gutter-mobile));
+    padding: var(--md-sys-spacing-2) var(--md-sys-gutter-mobile);
+    background: var(--md-sys-color-surface);
+    box-shadow: 0 1px 0 var(--md-sys-color-outline-variant);
+  }
+  .grupo { margin-bottom: var(--md-sys-spacing-4); }
+
+  /* o h1 usa clamp(26px, <token fixo>, 40px), que nao e fluido de
+     verdade: o termo do meio e estatico, entao ele trava no token e
+     come 2 linhas da tela. Aqui ele cede a altura para a lista. */
+  #titulo-projeto {
+    font-size: clamp(24px, 7.4vw, 32px);
+    margin-top: var(--md-sys-spacing-1);
+  }
+  .subtitulo { margin-bottom: var(--md-sys-spacing-4); }
+
+  /* com o titulo do grupo quebrando em 2 linhas, o contador ficava
+     flutuando na altura do meio; alinha no topo, na primeira linha */
+  .grupo-cabecalho { align-items: flex-start; }
+  .grupo-contagem { margin-top: 1px; flex: none; }
+  /* o balance forca a quebra em 2; em 375px o nome cabe em uma linha */
+  .grupo-nome {
+    text-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: normal;
+  }
+
   #tela-exercicio {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows:
