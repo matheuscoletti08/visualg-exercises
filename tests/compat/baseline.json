@@ -1,0 +1,486 @@
+{
+ "_nota": "Gerado por tests/compat/corpus.test.mjs --atualizar. Não editar à mão.",
+ "faccat/ex05.alg": {
+  "desfecho": "ok",
+  "saida": "Informe um numero: \nO antecessor e: 4\n",
+  "erro": null
+ },
+ "faccat/ex06.alg": {
+  "desfecho": "ok",
+  "saida": "Informe a base: \nInforme a altura: \nArea do retangulo: 50\n",
+  "erro": null
+ },
+ "faccat/ex07.alg": {
+  "desfecho": "ok",
+  "saida": "Informe anos: \nInforme meses: \nInforme dias: \nIdade em dias: 2127.5\n",
+  "erro": null
+ },
+ "faccat/ex08.alg": {
+  "desfecho": "ok",
+  "saida": "Total de eleitores: \nBrancos: \nNulos: \nValidos: \nPercentual brancos: 200 %\nPercentual nulos: 50 %\nPercentual validos: 2000 %\n",
+  "erro": null
+ },
+ "faccat/ex09.alg": {
+  "desfecho": "ok",
+  "saida": "Salario atual: \nPercentual de reajuste: \nNovo salario: 5.5\n",
+  "erro": null
+ },
+ "faccat/ex10.alg": {
+  "desfecho": "ok",
+  "saida": "Custo de fabrica: \nCusto final ao consumidor: 8.65\n",
+  "erro": null
+ },
+ "faccat/ex11.alg": {
+  "desfecho": "ok",
+  "saida": "Salario fixo: \nTotal de vendas: \nValor por carro vendido: \nSalario final: 18\n",
+  "erro": null
+ },
+ "faccat/ex12.alg": {
+  "desfecho": "ok",
+  "saida": "Informe temperatura Fahrenheit: \nEm Celsius: -15\n",
+  "erro": null
+ },
+ "faccat/ex13.alg": {
+  "desfecho": "ok",
+  "saida": "Nota 1: \nNota 2: \nNota 3: \nMedia final: 5.25\n",
+  "erro": null
+ },
+ "faccat/ex14.alg": {
+  "desfecho": "ok",
+  "saida": "Informe um valor: \nNAO E MAIOR QUE 10!\n",
+  "erro": null
+ },
+ "faccat/ex15.alg": {
+  "desfecho": "ok",
+  "saida": "Informe um valor: \nPOSITIVO\n",
+  "erro": null
+ },
+ "faccat/ex16.alg": {
+  "desfecho": "ok",
+  "saida": "Informe a quantidade de macas: \nTotal a pagar: 6.5\n",
+  "erro": null
+ },
+ "faccat/ex17.alg": {
+  "desfecho": "ok",
+  "saida": "Informe a primeira nota: \nInforme a segunda nota: \nAPROVADO\n",
+  "erro": null
+ },
+ "faccat/ex18.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o ano atual: \nInforme o ano de nascimento: \nNao pode votar!\n",
+  "erro": null
+ },
+ "faccat/ex19.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o valor de A: \nInforme o valor de B: \nO maior valor e: 10\n",
+  "erro": null
+ },
+ "faccat/ex20.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o valor de A: \nInforme o valor de B: \nValores em ordem crescente: 5 10\n",
+  "erro": null
+ },
+ "faccat/ex21.alg": {
+  "desfecho": "ok",
+  "saida": "Informe a hora de inicio: \nInforme a hora de fim: \nDuracao: 5 horas\n",
+  "erro": null
+ },
+ "faccat/ex22.alg": {
+  "desfecho": "ok",
+  "saida": "Informe as horas trabalhadas no mes: \nInforme o salario por hora: \nSalario total: 50\n",
+  "erro": null
+ },
+ "faccat/ex23.alg": {
+  "desfecho": "ok",
+  "saida": "Nome: \nAltura (m): \nSexo (M ou F): \nPeso ideal de 5: 576.30 kg\n",
+  "erro": null
+ },
+ "faccat/ex24.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o salario fixo: \nInforme o valor das vendas: \nTotal a receber: 5.3\n",
+  "erro": null
+ },
+ "faccat/ex25.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o salario fixo: \nInforme o valor das vendas: \nInforme o valor dos debitos: \nInforme o valor dos creditos: \nSaldo positivo\n",
+  "erro": null
+ },
+ "faccat/ex26.alg": {
+  "desfecho": "ok",
+  "saida": "Informe o estoque atual: \nInforme o estoque maximo: \nInforme o estoque minimo: \nEfetuar compra\n",
+  "erro": null
+ },
+ "faccat/ex27.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um valor: \nPOSITIVO\n",
+  "erro": null
+ },
+ "faccat/ex28.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o primeiro valor: \nDigite o segundo valor: \nDigite o terceiro valor: \nO maior valor e: 10\n",
+  "erro": null
+ },
+ "faccat/ex29.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o primeiro valor: \nDigite o segundo valor: \nDigite o terceiro valor: \nA soma dos dois maiores e: 15\n",
+  "erro": null
+ },
+ "faccat/ex30.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o primeiro valor: \nDigite o segundo valor: \nDigite o terceiro valor: \nValores em ordem crescente: 2.5, 5, 10\n",
+  "erro": null
+ },
+ "faccat/ex31.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o lado A: \nDigite o lado B: \nDigite o lado C: \nNao formam um triangulo\n",
+  "erro": null
+ },
+ "faccat/ex32.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o nome do primeiro time: \nDigite o nome do segundo time: \nDigite os gols do 5: \nDigite os gols do 10: \nVencedor: 5\n",
+  "erro": null
+ },
+ "faccat/ex33.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o primeiro valor: \nDigite o segundo valor: \nSegundo maior\n",
+  "erro": null
+ },
+ "faccat/ex34.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor de x: \nDigite o valor de y: \nz = 55, Resposta = B\n",
+  "erro": null
+ },
+ "faccat/ex35.alg": {
+  "desfecho": "ok",
+  "saida": "Litros vendidos: \nTipo (A-alcool, G-gasolina): \nTotal a pagar: 0.00\n",
+  "erro": null
+ },
+ "faccat/ex36.alg": {
+  "desfecho": "ok",
+  "saida": "Idade homem 1: \nIdade homem 2: \nIdade mulher 1: \nIdade mulher 2: \nSoma (homem velho + mulher nova): 13\nProduto (homem novo * mulher velha): 500\n",
+  "erro": null
+ },
+ "faccat/ex37.alg": {
+  "desfecho": "ok",
+  "saida": "Kg de morangos: \nKg de macas: \nTotal a pagar: 24.75\n",
+  "erro": null
+ },
+ "faccat/ex38.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o codigo: \nUsuario invalido!\n",
+  "erro": null
+ },
+ "faccat/ex39.alg": {
+  "desfecho": "ok",
+  "saida": "a) (A e B) ou (A xou B) = VERDADEIRO\nb) (A ou B) e (A e C) = FALSO\nc) A ou C e B xou A e nao B = VERDADEIRO\n",
+  "erro": null
+ },
+ "faccat/ex41.alg": {
+  "desfecho": "ok",
+  "saida": "Nota 1: \nNota 2: \nNota 3: \nMedia dos exercicios: \nMedia de aproveitamento: 18.928571428571427\n",
+  "erro": null
+ },
+ "manzano/ex25_A.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a temperatura em Celsius: \nTemperatura em Fahrenheit: 41.00\n",
+  "erro": null
+ },
+ "manzano/ex25_B.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a temperatura em Fahrenheit: \nTemperatura em Celsius: -15.00\n",
+  "erro": null
+ },
+ "manzano/ex25_C.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o raio da lata: \nDigite a altura da lata: \nVolume da lata: 785.40\n",
+  "erro": null
+ },
+ "manzano/ex25_D.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o tempo gasto (horas): \nDigite a velocidade media (km/h): \nVelocidade media: 10\nTempo gasto: 5\nDistancia percorrida: 50\nLitros usados: 4.17\n",
+  "erro": null
+ },
+ "manzano/ex25_E.alg": {
+  "desfecho": "ok",
+  "saida": "-- Prestacao em Atraso --\nDigite o valor da prestacao: R$ \nDigite a taxa (%): \nDigite o tempo de atraso (meses): \nValor da prestacao com atraso: R$ 55.00\nValor dos juros: R$ 50.00\n",
+  "erro": null
+ },
+ "manzano/ex25_F.alg": {
+  "desfecho": "ok",
+  "saida": "-- Troca de Valores --\nDigite o valor de A: \nDigite o valor de B: \nA = 10 | B = 5\n",
+  "erro": null
+ },
+ "manzano/ex25_G.alg": {
+  "desfecho": "ok",
+  "saida": "-- Propriedade Distributiva --\nDigite o valor de A: \nDigite o valor de B: \nDigite o valor de C: \nDigite o valor de D: \nA + B = 15 | A * B = 50\nA + C = 105 | A * C = 500\nA + D = 8 | A * D = 15\nB + C = 110 | B * C = 1000\nB + D = 13 | B * D = 30\nC + D = 103 | C * D = 300\n",
+  "erro": null
+ },
+ "manzano/ex25_H.alg": {
+  "desfecho": "ok",
+  "saida": "-- Volume da Caixa Retangular --\nDigite o comprimento: \nDigite a largura: \nDigite a altura: \nVolume da caixa retangular: 125.00\n",
+  "erro": null
+ },
+ "manzano/ex25_I.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor de A: \nDigite o valor de B: \nQuadrado da diferenca (A - B)^2 = 25\n",
+  "erro": null
+ },
+ "manzano/ex25_J.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a cotacao do dolar: \nDigite a quantidade de dolares: \nValor em reais: R$50.00\n",
+  "erro": null
+ },
+ "manzano/ex25_K.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a cotacao do dolar: \nDigite a quantidade de reais: \nValor em dolares: US$2.00\n",
+  "erro": null
+ },
+ "manzano/ex25_L.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor de A: \nDigite o valor de B: \nDigite o valor de C: \nSoma dos quadrados: 131.25\n",
+  "erro": null
+ },
+ "manzano/ex25_M.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor de A: \nDigite o valor de B: \nDigite o valor de C: \nQuadrado da soma: 306.25\n",
+  "erro": null
+ },
+ "manzano/ex26_A.alg": {
+  "desfecho": "ok",
+  "saida": "Valor A: \nValor B: \nValor C: \nValor D: \nProduto (A * C): 500\nSoma (B + D): 13\n",
+  "erro": null
+ },
+ "manzano/ex26_B.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o salario mensal: \nDigite o percentual de reajuste: \nNovo salario: 5.50\n",
+  "erro": null
+ },
+ "manzano/ex26_C.alg": {
+  "desfecho": "ok",
+  "saida": "Votos do candidato A: \nVotos do candidato B: \nVotos do candidato C: \nVotos nulos: \nVotos brancos: \nTotal de eleitores: 125\nPercentual A: 4.00 %\nPercentual B: 8.00 %\nPercentual C: 80.00 %\nPercentual nulos: 2.40 %\nPercentual brancos: 5.60 %\n",
+  "erro": null
+ },
+ "manzano/ex26_D.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a largura do retangulo: \nDigite a altura do retangulo: \nArea do retangulo: 50.00\nPerimetro do retangulo: 30.00\n",
+  "erro": null
+ },
+ "manzano/ex26_E.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a primeira nota: \nDigite a segunda nota: \nDigite a terceira nota: \nMedia das notas: 5.83\n",
+  "erro": null
+ },
+ "manzano/ex26_F.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a quantidade de horas: \nDigite a quantidade de minutos: \nDigite a quantidade de segundos: \nTotal de segundos: 18700\n",
+  "erro": null
+ },
+ "manzano/ex26_G.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o peso (kg): \nDigite a altura (m): \nIndice de massa corporal: 0.05\n",
+  "erro": null
+ },
+ "manzano/ex26_H.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o preco do produto: R$ \nDigite o percentual de desconto: \nValor do desconto: R$0.50\nPreco final: R$4.50\n",
+  "erro": null
+ },
+ "manzano/ex26_I.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor da compra: R$ \nDigite o valor pago: R$ \nValor da compra: R$5.00\nValor pago: R$10.00\nTroco: R$5.00\n",
+  "erro": null
+ },
+ "manzano/ex26_J.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o custo do produto: R$ \nDigite o preco de venda: R$ \nLucro obtido: R$5.00\nPercentual de lucro: 100.00 %\n",
+  "erro": null
+ },
+ "manzano/ex26_K.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o capital: R$ \nDigite a taxa de juros (% ao mes): \nDigite o tempo (meses): \nJuros: R$50.00\nMontante: R$55.00\n",
+  "erro": null
+ },
+ "manzano/ex26_L.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a populacao: \nDigite a area (km2): \nDensidade demografica: 0.50 habitantes por km2\n",
+  "erro": null
+ },
+ "manzano/ex26_M.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor de A: \nDigite o valor de B: \nProduto (A * B): 50\nSoma (A + B): 15\n",
+  "erro": null
+ },
+ "manzano/ex46_A.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um numero: \n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50\n",
+  "erro": null
+ },
+ "manzano/ex46_B.alg": {
+  "desfecho": "ok",
+  "saida": "Soma de 1 a 100: 5050\n",
+  "erro": null
+ },
+ "manzano/ex46_C.alg": {
+  "desfecho": "ok",
+  "saida": "Soma dos pares de 1 a 500: 62750\n",
+  "erro": null
+ },
+ "manzano/ex46_D.alg": {
+  "desfecho": "ok",
+  "saida": "1\n3\n5\n7\n9\n11\n13\n15\n17\n19\n",
+  "erro": null
+ },
+ "manzano/ex46_E.alg": {
+  "desfecho": "ok",
+  "saida": "3 ^ 0 = 1\n3 ^ 1 = 3\n3 ^ 2 = 9\n3 ^ 3 = 27\n3 ^ 4 = 81\n3 ^ 5 = 243\n3 ^ 6 = 729\n3 ^ 7 = 2187\n3 ^ 8 = 6561\n3 ^ 9 = 19683\n3 ^ 10 = 59049\n3 ^ 11 = 177147\n3 ^ 12 = 531441\n3 ^ 13 = 1594323\n3 ^ 14 = 4782969\n3 ^ 15 = 14348907\n",
+  "erro": null
+ },
+ "manzano/ex46_F.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a base: \nDigite o expoente: \n5 ^ 10 = 9765625\n",
+  "erro": null
+ },
+ "manzano/ex46_G.alg": {
+  "desfecho": "ok",
+  "saida": "Serie de Fibonacci:\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n610\n",
+  "erro": null
+ },
+ "manzano/ex46_H.alg": {
+  "desfecho": "ok",
+  "saida": "10 C = 50.00 F\n20 C = 68.00 F\n30 C = 86.00 F\n40 C = 104.00 F\n50 C = 122.00 F\n60 C = 140.00 F\n70 C = 158.00 F\n80 C = 176.00 F\n90 C = 194.00 F\n100 C = 212.00 F\n",
+  "erro": null
+ },
+ "manzano/ex46_I.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor 1: \nDigite o valor 2: \nDigite o valor 3: \nDigite o valor 4: \nDigite o valor 5: \nDigite o valor 6: \nDigite o valor 7: \nDigite o valor 8: \nDigite o valor 9: \nDigite o valor 10: \nSomatorio: 143\nMedia aritmetica: 14.3\n",
+  "erro": null
+ },
+ "manzano/ex46_J.alg": {
+  "desfecho": "ok",
+  "saida": "Soma dos pares 50-70: 660\nMedia aritmetica: 60\n",
+  "erro": null
+ },
+ "manzano/ex46_K.alg": {
+  "desfecho": "limite-passos",
+  "saida": null,
+  "erro": {
+   "codigo": "TEMPO_LIMITE_PASSOS",
+   "mensagem": "Possível loop infinito: execução interrompida após 2000000 comandos",
+   "linha": 24
+  }
+ },
+ "manzano/ex46_L.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um valor inteiro (negativo para terminar): \nDigite um valor inteiro (negativo para terminar): \nDigite um valor inteiro (negativo para terminar): \nDigite um valor inteiro (negativo para terminar): \nDigite um valor inteiro (negativo para terminar): \nDigite um valor inteiro (negativo para terminar): \nMaior valor: 100\nMenor valor: 3\n",
+  "erro": null
+ },
+ "manzano/ex50_A.alg": {
+  "desfecho": "ok",
+  "saida": "15 ^ 2 = 225\n16 ^ 2 = 256\n17 ^ 2 = 289\n18 ^ 2 = 324\n19 ^ 2 = 361\n20 ^ 2 = 400\n21 ^ 2 = 441\n22 ^ 2 = 484\n23 ^ 2 = 529\n24 ^ 2 = 576\n25 ^ 2 = 625\n26 ^ 2 = 676\n27 ^ 2 = 729\n28 ^ 2 = 784\n29 ^ 2 = 841\n30 ^ 2 = 900\n31 ^ 2 = 961\n32 ^ 2 = 1024\n33 ^ 2 = 1089\n34 ^ 2 = 1156\n35 ^ 2 = 1225\n36 ^ 2 = 1296\n37 ^ 2 = 1369\n38 ^ 2 = 1444\n39 ^ 2 = 1521\n40 ^ 2 = 1600\n41 ^ 2 = 1681\n42 ^ 2 = 1764\n43 ^ 2 = 1849\n44 ^ 2 = 1936\n45 ^ 2 = 2025\n46 ^ 2 = 2116\n47 ^ 2 = 2209\n48 ^ 2 = 2304\n49 ^ 2 = 2401\n50 ^ 2 = 2500\n51 ^ 2 = 2601\n52 ^ 2 = 2704\n53 ^ 2 = 2809\n54 ^ 2 = 2916\n55 ^ 2 = 3025\n56 ^ 2 = 3136\n57 ^ 2 = 3249\n58 ^ 2 = 3364\n59 ^ 2 = 3481\n60 ^ 2 = 3600\n61 ^ 2 = 3721\n62 ^ 2 = 3844\n63 ^ 2 = 3969\n64 ^ 2 = 4096\n65 ^ 2 = 4225\n66 ^ 2 = 4356\n67 ^ 2 = 4489\n68 ^ 2 = 4624\n69 ^ 2 = 4761\n70 ^ 2 = 4900\n71 ^ 2 = 5041\n72 ^ 2 = 5184\n73 ^ 2 = 5329\n74 ^ 2 = 5476\n75 ^ 2 = 5625\n76 ^ 2 = 5776\n77 ^ 2 = 5929\n78 ^ 2 = 6084\n79 ^ 2 = 6241\n80 ^ 2 = 6400\n81 ^ 2 = 6561\n82 ^ 2 = 6724\n83 ^ 2 = 6889\n84 ^ 2 = 7056\n85 ^ 2 = 7225\n86 ^ 2 = 7396\n87 ^ 2 = 7569\n88 ^ 2 = 7744\n89 ^ 2 = 7921\n90 ^ 2 = 8100\n91 ^ 2 = 8281\n92 ^ 2 = 8464\n93 ^ 2 = 8649\n94 ^ 2 = 8836\n95 ^ 2 = 9025\n96 ^ 2 = 9216\n97 ^ 2 = 9409\n98 ^ 2 = 9604\n99 ^ 2 = 9801\n100 ^ 2 = 10000\n101 ^ 2 = 10201\n102 ^ 2 = 10404\n103 ^ 2 = 10609\n104 ^ 2 = 10816\n105 ^ 2 = 11025\n106 ^ 2 = 11236\n107 ^ 2 = 11449\n108 ^ 2 = 11664\n109 ^ 2 = 11881\n110 ^ 2 = 12100\n111 ^ 2 = 12321\n112 ^ 2 = 12544\n113 ^ 2 = 12769\n114 ^ 2 = 12996\n115 ^ 2 = 13225\n116 ^ 2 = 13456\n117 ^ 2 = 13689\n118 ^ 2 = 13924\n119 ^ 2 = 14161\n120 ^ 2 = 14400\n121 ^ 2 = 14641\n122 ^ 2 = 14884\n123 ^ 2 = 15129\n124 ^ 2 = 15376\n125 ^ 2 = 15625\n126 ^ 2 = 15876\n127 ^ 2 = 16129\n128 ^ 2 = 16384\n129 ^ 2 = 16641\n130 ^ 2 = 16900\n131 ^ 2 = 17161\n132 ^ 2 = 17424\n133 ^ 2 = 17689\n134 ^ 2 = 17956\n135 ^ 2 = 18225\n136 ^ 2 = 18496\n137 ^ 2 = 18769\n138 ^ 2 = 19044\n139 ^ 2 = 19321\n140 ^ 2 = 19600\n141 ^ 2 = 19881\n142 ^ 2 = 20164\n143 ^ 2 = 20449\n144 ^ 2 = 20736\n145 ^ 2 = 21025\n146 ^ 2 = 21316\n147 ^ 2 = 21609\n148 ^ 2 = 21904\n149 ^ 2 = 22201\n150 ^ 2 = 22500\n151 ^ 2 = 22801\n152 ^ 2 = 23104\n153 ^ 2 = 23409\n154 ^ 2 = 23716\n155 ^ 2 = 24025\n156 ^ 2 = 24336\n157 ^ 2 = 24649\n158 ^ 2 = 24964\n159 ^ 2 = 25281\n160 ^ 2 = 25600\n161 ^ 2 = 25921\n162 ^ 2 = 26244\n163 ^ 2 = 26569\n164 ^ 2 = 26896\n165 ^ 2 = 27225\n166 ^ 2 = 27556\n167 ^ 2 = 27889\n168 ^ 2 = 28224\n169 ^ 2 = 28561\n170 ^ 2 = 28900\n171 ^ 2 = 29241\n172 ^ 2 = 29584\n173 ^ 2 = 29929\n174 ^ 2 = 30276\n175 ^ 2 = 30625\n176 ^ 2 = 30976\n177 ^ 2 = 31329\n178 ^ 2 = 31684\n179 ^ 2 = 32041\n180 ^ 2 = 32400\n181 ^ 2 = 32761\n182 ^ 2 = 33124\n183 ^ 2 = 33489\n184 ^ 2 = 33856\n185 ^ 2 = 34225\n186 ^ 2 = 34596\n187 ^ 2 = 34969\n188 ^ 2 = 35344\n189 ^ 2 = 35721\n190 ^ 2 = 36100\n191 ^ 2 = 36481\n192 ^ 2 = 36864\n193 ^ 2 = 37249\n194 ^ 2 = 37636\n195 ^ 2 = 38025\n196 ^ 2 = 38416\n197 ^ 2 = 38809\n198 ^ 2 = 39204\n199 ^ 2 = 39601\n200 ^ 2 = 40000\n",
+  "erro": null
+ },
+ "manzano/ex50_B.alg": {
+  "desfecho": "ok",
+  "saida": "Somatorio dos pares 1-500: 62750\n",
+  "erro": null
+ },
+ "manzano/ex50_C.alg": {
+  "desfecho": "ok",
+  "saida": "4\n8\n12\n16\n20\n24\n28\n32\n36\n40\n44\n48\n52\n56\n60\n64\n68\n72\n76\n80\n84\n88\n92\n96\n100\n104\n108\n112\n116\n120\n124\n128\n132\n136\n140\n144\n148\n152\n156\n160\n164\n168\n172\n176\n180\n184\n188\n192\n196\n200\n",
+  "erro": null
+ },
+ "manzano/ex50_D.alg": {
+  "desfecho": "ok",
+  "saida": "Total de graos: 18446744073709552000\n",
+  "erro": null
+ },
+ "manzano/ex50_E.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o valor 1: \nDigite o valor 2: \nDigite o valor 3: \nDigite o valor 4: \nDigite o valor 5: \nDigite o valor 6: \nDigite o valor 7: \nDigite o valor 8: \nDigite o valor 9: \nDigite o valor 10: \nDigite o valor 11: \nDigite o valor 12: \nDigite o valor 13: \nDigite o valor 14: \nDigite o valor 15: \nSomatorio dos fatoriais: 2.799786463318323e+158\n",
+  "erro": null
+ },
+ "manzano/ex50_F.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nSomatorio: 127.5\nMedia: 21.25\nTotal de valores: 6\n",
+  "erro": null
+ },
+ "manzano/ex50_G.alg": {
+  "desfecho": "ok",
+  "saida": "1! = 1\n3! = 6\n5! = 120\n7! = 5040\n9! = 362880\n",
+  "erro": null
+ },
+ "manzano/ex50_H.alg": {
+  "desfecho": "limite-passos",
+  "saida": null,
+  "erro": {
+   "codigo": "TEMPO_LIMITE_PASSOS",
+   "mensagem": "Possível loop infinito: execução interrompida após 2000000 comandos",
+   "linha": 24
+  }
+ },
+ "manzano/ex50_I.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nDigite um valor (negativo para terminar): \nMaior: 100\nMenor: 3\n",
+  "erro": null
+ },
+ "manzano/ex50_J.alg": {
+  "desfecho": "ok",
+  "saida": "Digite o dividendo: \nDigite o divisor: \nQuociente: 1\nResto: -5\n",
+  "erro": null
+ },
+ "manzano/ex66_A.alg": {
+  "desfecho": "ok",
+  "saida": "15 ^ 2 = 225\n16 ^ 2 = 256\n17 ^ 2 = 289\n18 ^ 2 = 324\n19 ^ 2 = 361\n20 ^ 2 = 400\n21 ^ 2 = 441\n22 ^ 2 = 484\n23 ^ 2 = 529\n24 ^ 2 = 576\n25 ^ 2 = 625\n26 ^ 2 = 676\n27 ^ 2 = 729\n28 ^ 2 = 784\n29 ^ 2 = 841\n30 ^ 2 = 900\n31 ^ 2 = 961\n32 ^ 2 = 1024\n33 ^ 2 = 1089\n34 ^ 2 = 1156\n35 ^ 2 = 1225\n36 ^ 2 = 1296\n37 ^ 2 = 1369\n38 ^ 2 = 1444\n39 ^ 2 = 1521\n40 ^ 2 = 1600\n41 ^ 2 = 1681\n42 ^ 2 = 1764\n43 ^ 2 = 1849\n44 ^ 2 = 1936\n45 ^ 2 = 2025\n46 ^ 2 = 2116\n47 ^ 2 = 2209\n48 ^ 2 = 2304\n49 ^ 2 = 2401\n50 ^ 2 = 2500\n51 ^ 2 = 2601\n52 ^ 2 = 2704\n53 ^ 2 = 2809\n54 ^ 2 = 2916\n55 ^ 2 = 3025\n56 ^ 2 = 3136\n57 ^ 2 = 3249\n58 ^ 2 = 3364\n59 ^ 2 = 3481\n60 ^ 2 = 3600\n61 ^ 2 = 3721\n62 ^ 2 = 3844\n63 ^ 2 = 3969\n64 ^ 2 = 4096\n65 ^ 2 = 4225\n66 ^ 2 = 4356\n67 ^ 2 = 4489\n68 ^ 2 = 4624\n69 ^ 2 = 4761\n70 ^ 2 = 4900\n71 ^ 2 = 5041\n72 ^ 2 = 5184\n73 ^ 2 = 5329\n74 ^ 2 = 5476\n75 ^ 2 = 5625\n76 ^ 2 = 5776\n77 ^ 2 = 5929\n78 ^ 2 = 6084\n79 ^ 2 = 6241\n80 ^ 2 = 6400\n81 ^ 2 = 6561\n82 ^ 2 = 6724\n83 ^ 2 = 6889\n84 ^ 2 = 7056\n85 ^ 2 = 7225\n86 ^ 2 = 7396\n87 ^ 2 = 7569\n88 ^ 2 = 7744\n89 ^ 2 = 7921\n90 ^ 2 = 8100\n91 ^ 2 = 8281\n92 ^ 2 = 8464\n93 ^ 2 = 8649\n94 ^ 2 = 8836\n95 ^ 2 = 9025\n96 ^ 2 = 9216\n97 ^ 2 = 9409\n98 ^ 2 = 9604\n99 ^ 2 = 9801\n100 ^ 2 = 10000\n101 ^ 2 = 10201\n102 ^ 2 = 10404\n103 ^ 2 = 10609\n104 ^ 2 = 10816\n105 ^ 2 = 11025\n106 ^ 2 = 11236\n107 ^ 2 = 11449\n108 ^ 2 = 11664\n109 ^ 2 = 11881\n110 ^ 2 = 12100\n111 ^ 2 = 12321\n112 ^ 2 = 12544\n113 ^ 2 = 12769\n114 ^ 2 = 12996\n115 ^ 2 = 13225\n116 ^ 2 = 13456\n117 ^ 2 = 13689\n118 ^ 2 = 13924\n119 ^ 2 = 14161\n120 ^ 2 = 14400\n121 ^ 2 = 14641\n122 ^ 2 = 14884\n123 ^ 2 = 15129\n124 ^ 2 = 15376\n125 ^ 2 = 15625\n126 ^ 2 = 15876\n127 ^ 2 = 16129\n128 ^ 2 = 16384\n129 ^ 2 = 16641\n130 ^ 2 = 16900\n131 ^ 2 = 17161\n132 ^ 2 = 17424\n133 ^ 2 = 17689\n134 ^ 2 = 17956\n135 ^ 2 = 18225\n136 ^ 2 = 18496\n137 ^ 2 = 18769\n138 ^ 2 = 19044\n139 ^ 2 = 19321\n140 ^ 2 = 19600\n141 ^ 2 = 19881\n142 ^ 2 = 20164\n143 ^ 2 = 20449\n144 ^ 2 = 20736\n145 ^ 2 = 21025\n146 ^ 2 = 21316\n147 ^ 2 = 21609\n148 ^ 2 = 21904\n149 ^ 2 = 22201\n150 ^ 2 = 22500\n151 ^ 2 = 22801\n152 ^ 2 = 23104\n153 ^ 2 = 23409\n154 ^ 2 = 23716\n155 ^ 2 = 24025\n156 ^ 2 = 24336\n157 ^ 2 = 24649\n158 ^ 2 = 24964\n159 ^ 2 = 25281\n160 ^ 2 = 25600\n161 ^ 2 = 25921\n162 ^ 2 = 26244\n163 ^ 2 = 26569\n164 ^ 2 = 26896\n165 ^ 2 = 27225\n166 ^ 2 = 27556\n167 ^ 2 = 27889\n168 ^ 2 = 28224\n169 ^ 2 = 28561\n170 ^ 2 = 28900\n171 ^ 2 = 29241\n172 ^ 2 = 29584\n173 ^ 2 = 29929\n174 ^ 2 = 30276\n175 ^ 2 = 30625\n176 ^ 2 = 30976\n177 ^ 2 = 31329\n178 ^ 2 = 31684\n179 ^ 2 = 32041\n180 ^ 2 = 32400\n181 ^ 2 = 32761\n182 ^ 2 = 33124\n183 ^ 2 = 33489\n184 ^ 2 = 33856\n185 ^ 2 = 34225\n186 ^ 2 = 34596\n187 ^ 2 = 34969\n188 ^ 2 = 35344\n189 ^ 2 = 35721\n190 ^ 2 = 36100\n191 ^ 2 = 36481\n192 ^ 2 = 36864\n193 ^ 2 = 37249\n194 ^ 2 = 37636\n195 ^ 2 = 38025\n196 ^ 2 = 38416\n197 ^ 2 = 38809\n198 ^ 2 = 39204\n199 ^ 2 = 39601\n200 ^ 2 = 40000\n",
+  "erro": null
+ },
+ "manzano/ex66_B.alg": {
+  "desfecho": "ok",
+  "saida": "Digite um numero: \n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50\n",
+  "erro": null
+ },
+ "manzano/ex66_C.alg": {
+  "desfecho": "ok",
+  "saida": "Soma de 1 a 100: 5050\n",
+  "erro": null
+ },
+ "manzano/ex66_D.alg": {
+  "desfecho": "ok",
+  "saida": "Somatorio dos pares 1-500: 62750\n",
+  "erro": null
+ },
+ "manzano/ex66_E.alg": {
+  "desfecho": "ok",
+  "saida": "1\n3\n5\n7\n9\n11\n13\n15\n17\n19\n",
+  "erro": null
+ },
+ "manzano/ex66_F.alg": {
+  "desfecho": "ok",
+  "saida": "4\n8\n12\n16\n20\n24\n28\n32\n36\n40\n44\n48\n52\n56\n60\n64\n68\n72\n76\n80\n84\n88\n92\n96\n100\n104\n108\n112\n116\n120\n124\n128\n132\n136\n140\n144\n148\n152\n156\n160\n164\n168\n172\n176\n180\n184\n188\n192\n196\n200\n",
+  "erro": null
+ },
+ "manzano/ex66_G.alg": {
+  "desfecho": "ok",
+  "saida": "3 ^ 0 = 1\n3 ^ 1 = 3\n3 ^ 2 = 9\n3 ^ 3 = 27\n3 ^ 4 = 81\n3 ^ 5 = 243\n3 ^ 6 = 729\n3 ^ 7 = 2187\n3 ^ 8 = 6561\n3 ^ 9 = 19683\n3 ^ 10 = 59049\n3 ^ 11 = 177147\n3 ^ 12 = 531441\n3 ^ 13 = 1594323\n3 ^ 14 = 4782969\n3 ^ 15 = 14348907\n",
+  "erro": null
+ },
+ "manzano/ex66_H.alg": {
+  "desfecho": "ok",
+  "saida": "Digite a base: \nDigite o expoente: \n5 ^ 10 = 9765625\n",
+  "erro": null
+ },
+ "manzano/ex66_I.alg": {
+  "desfecho": "ok",
+  "saida": "Serie de Fibonacci:\n1\n1\n2\n3\n5\n8\n13\n21\n34\n55\n89\n144\n233\n377\n610\n",
+  "erro": null
+ },
+ "manzano/ex66_J.alg": {
+  "desfecho": "ok",
+  "saida": "10 C = 50.00 F\n20 C = 68.00 F\n30 C = 86.00 F\n40 C = 104.00 F\n50 C = 122.00 F\n60 C = 140.00 F\n70 C = 158.00 F\n80 C = 176.00 F\n90 C = 194.00 F\n100 C = 212.00 F\n",
+  "erro": null
+ },
+ "manzano/ex66_K.alg": {
+  "desfecho": "ok",
+  "saida": "1! = 1\n3! = 6\n5! = 120\n7! = 5040\n9! = 362880\n",
+  "erro": null
+ }
+}

@@ -5,12 +5,32 @@
     exercicio: null,
     rodando: false,
     parar: false,
-    pendente: null
+    pendente: null,
+    tabLivre: false,
+    // §40–§45: a sessão de depuração. `debug` só existe depois que o aluno
+    // marca um breakpoint ou aperta Debug, e `modoDebug` é o que faz o botão
+    // Executar passar a rodar por ele em vez do caminho direto.
+    debug: null,
+    modoDebug: false,
+    sessao: null,
+    // Último retrato emitido por `aoMudar`. É daqui que saem o estado, a linha
+    // atual, as variáveis e a call stack que a UI desenha — ler o `Debug`
+    // diretamente exigiria adivinhar o estado por inspectores que já não
+    // existem (`status`, `currentSourceLocation`).
+    retrato: null,
+    linhaMarcada: null,
+    linhasGutter: 0,
+    // Código com que a sessão de debug foi criada. Se o aluno editar o editor
+    // depois disso, `sessaoDebug()` recria a sessão em vez de depurar o
+    // programa antigo com os passos novos.
+    codigoDaSessao: null
   };
   function $(id) {
     return document.getElementById(id);
   }
   var CHAVES = {};
+  // O painel §43–§45, criado uma vez e atualizado por `aoMudar`.
+  var painelDebug = null;
   var LISTA_CHAVES =
     "algoritmo var inicio fimalgoritmo se senao fimse enquanto fimenquanto " +
     "faca repita ate para fimpara de passo escreva escreval leia inteiro real " +
@@ -153,6 +173,7 @@
   }
   function realcar() {
     $("editor-pre").innerHTML = realceHtml($("editor").value);
+    sincronizarGutter();
   }
   var ROTULO_GRUPO = {
     "faccat-p4": "operadores",
@@ -259,6 +280,7 @@
   }
   function mostrarHome() {
     pararSeRodando();
+    limparSessaoDebug();
     $("tela-exercicio").hidden = true;
     $("tela-home").hidden = false;
     document.title = "VisualG — Exercícios";
@@ -282,6 +304,7 @@
       return;
     }
     pararSeRodando();
+    limparSessaoDebug();
     estado.exercicio = ex;
     $("tela-home").hidden = true;
     $("tela-exercicio").hidden = false;
@@ -289,6 +312,9 @@
     $("ex-descricao").textContent = ex.descricao || "";
     $("ex-badge").textContent = badgeDoExercicio(ex);
     $("editor").value = typeof ex.codigo === "string" ? ex.codigo : "";
+    estado.tabLivre = false;
+    destacarLinha(null);
+    atualizarIndicadorTab();
     limparConsole();
     realcar();
     $("editor").scrollTop = 0;
@@ -314,6 +340,7 @@
   function atualizarBotoes() {
     $("btn-executar").disabled = estado.rodando;
     $("btn-parar").disabled = !estado.rodando;
+    atualizarBotoesDebug();
   }
   function rolarConsole() {
     var pre = $("console-saida");
@@ -386,6 +413,13 @@
       setStatus("Erro", "erro");
       return;
     }
+    // §41–§45: com breakpoint marcado ou com o modo Debug ligado, a execução
+    // passa pelo `W.VG.Debugger`. Sem nenhum dos dois, o caminho direto continua
+    // sendo o de sempre — o debugger não pode custar nada a quem não depura.
+    if (estado.modoDebug || (estado.debug && estado.debug.linhas().length > 0)) {
+      executarComDebug();
+      return;
+    }
     estado.rodando = true;
     estado.parar = false;
     atualizarBotoes();
@@ -427,34 +461,745 @@
     });
   }
   function parar() {
-    if (!estado.rodando) return;
+    // §40 — `parar` é a válvula de escape. Ela não pode estar condicionada a
+    // `estado.rodando`, que é um espelho do que a UI ACHA que acontece: se esse
+    // espelho dessincroniza, o botão fica habilitado e não faz nada, que é a
+    // pior combinação possível. O que decide é haver sessão viva.
+    var temSessao = !!(estado.sessao && typeof estado.sessao.then === "function");
+    var dbgVivo = !!(estado.debug && estado.retrato &&
+      (estado.retrato.estado === "running" || estado.retrato.estado === "paused" ||
+       estado.retrato.estado === "stepping" || estado.retrato.estado === "waiting_input"));
+    if (!estado.rodando && !temSessao && !dbgVivo) return;
     estado.parar = true;
+    if (estado.debug) {
+      try {
+        estado.debug.parar();
+      } catch (e) {
+        // Derrubar a sessão parada não pode impedir a troca de tela.
+      }
+    }
     if (estado.pendente) {
       var p = estado.pendente;
       estado.pendente = null;
       esconderEntrada();
       p.reject(new Error("interrompido"));
     }
+    if (!estado.debug) {
+      // Caminho sem debugger: o executor direto observa `deveParar`.
+      estado.rodando = false;
+      atualizarBotoes();
+    }
   }
   function pararSeRodando() {
     if (estado.rodando) parar();
   }
+
+  // ===========================================================================
+  // §40–§45 — a sessão de depuração.
+  //
+  // `W.VG.Debugger` não sabe de DOM e `W.VGPlay.DebugPanels` não sabe de
+  // runtime: este bloco é a cola. Ele cria o `Debug` uma vez, liga o painel
+  // aos eventos de `aoMudar` e traduz cada comando (§40) num clique de botão.
+  // ===========================================================================
+  /**
+   * §40–§45 — derruba a sessão de depuração por completo.
+   *
+   * Chamada de TODO caminho que troca ou reinicia o código: abrir outro
+   * exercício, voltar para a home, e "Restaurar original". Sem ela, a sessão
+   * sobrevivia à troca de programa com o código velho dentro do `Debug`, os
+   * breakpoints da linha 8 apontando para linhas de outro exercício, e os painéis
+   * mostrando variáveis que não existem mais. `sessaoDebug()` reaproveita o
+   * objeto existente, então descartar a referência é o que faz a próxima
+   * depuração nascer do programa novo.
+   */
+  /**
+   * O retrato que a UI desenha quando não há sessão — trocar de exercício, abrir
+   * um arquivo, limpar o console.
+   *
+   * Ele é do MESMO formato de `Debug.retrato()`. A versão anterior era um híbrido
+   * dos dois formatos (`variaveis.locais`, `status`, `currentSourceLocation`,
+   * `stepMode`, `executionStats`), e o painel lia metade dos campos: o estado
+   * vazio era a única pintura que nunca mostrava uma fita coerente. Um objeto
+   * que finge ser um retrato tem que ter a forma do retrato.
+   */
+  var ESTADO_DEBUG_VAZIO = {
+    estado: "idle",
+    pausado: false,
+    motivo: null,
+    executionPoint: null,
+    callStack: [],
+    variaveis: { globais: [], quadros: [], foco: 0 },
+    perfil: [],
+    perfilPorLinha: [],
+    breakpoints: [],
+    condicionais: [],
+    watches: [],
+    quadroFocado: 0,
+    variavelModificada: null,
+    erro: null,
+    stats: null
+  };
+  function limparSessaoDebug() {
+    if (estado.debug && typeof estado.debug.parar === "function") {
+      try {
+        estado.debug.parar();
+      } catch (e) {
+        // Derrubar sessão parada não pode impedir a troca de tela.
+      }
+    }
+    estado.debug = null;
+    estado.modoDebug = false;
+    estado.sessao = null;
+    estado.retrato = null;
+    estado.rodando = false;
+    estado.parar = false;
+    estado.codigoDaSessao = null;
+    estado.linhasGutter = -1;
+    estado.linhaMarcada = null;
+    destacarLinha(null);
+    marcarGutter();
+    mostrarPaineisDebug(false);
+    if (painelDebug) {
+      try {
+        painelDebug.atualizar(ESTADO_DEBUG_VAZIO);
+      } catch (e) {
+        // Painel quebrado não impede a troca de tela.
+      }
+    }
+    var botaoDebug = $("btn-debug");
+    if (botaoDebug) {
+      botaoDebug.setAttribute("aria-pressed", "false");
+      botaoDebug.classList.remove("primario");
+      botaoDebug.classList.add("tonal");
+    }
+    atualizarBotoesDebug();
+  }
+  function sessaoDebug() {
+    var codigoAtual = $("editor").value;
+    if (estado.debug) {
+      // Se o aluno editou o código depois da sessão nascer, a sessão aponta para
+      // um programa que não existe mais. Recriar aqui evita que "Passo ▸" avance
+      // linhas do texto antigo — que é a forma mais confusa de depurar errado,
+      // porque a linha realçada não bate com o texto na tela.
+      if (estado.codigoDaSessao !== codigoAtual) {
+        limparSessaoDebug();
+      } else {
+        return estado.debug;
+      }
+    }
+    if (!window.VG || !window.VG.Debugger) {
+      consoleErro("-- Debugger não carregado: confira src/visualg/debugger.js --");
+      return null;
+    }
+    estado.codigoDaSessao = codigoAtual;
+    estado.debug = window.VG.Debugger.criar(codigoAtual, {
+      saida: function (texto) {
+        consoleAppend(texto);
+      },
+      entrada: function (dica) {
+        return pedirEntrada(dica);
+      },
+      // §41: uma linha por comando. Só repinta quando a linha MUDA — num laço
+      // de 200 mil voltas, repintar a cada comando é o que derruba a aba.
+      aoLinha: function (linha) {
+        if (linha === estado.linhaMarcada) return;
+        destacarLinha(linha);
+      },
+      maxPassos: 2000000
+    });
+    // O retrato é o ÚNICO estado que a UI lê. A versão anterior lia
+    // `currentSourceLocation.linha`, que não existe: o ponto vem em
+    // `executionPoint.sourceLine` (§28.1, derivado da AST). Ler o campo errado
+    // dava `null` sempre, e a linha realçada nunca acompanhava a pausa.
+    estado.debug.aoMudar(function (retrato) {
+      estado.retrato = retrato;
+      var ponto = retrato && retrato.executionPoint;
+      var linha = ponto && typeof ponto.sourceLine === "number" ? ponto.sourceLine : null;
+      if (linha !== estado.linhaMarcada) {
+        estado.linhaMarcada = linha;
+        destacarLinha(linha);
+        if (retrato && retrato.pausado && linha != null) centralizarLinha(linha);
+      }
+      if (painelDebug) painelDebug.atualizar(retrato);
+      atualizarBotoesDebug();
+      atualizarStatusDebug(retrato);
+    });
+    return estado.debug;
+  }
+  function executarComDebug() {
+    var dbg = sessaoDebug();
+    if (!dbg) {
+      estado.modoDebug = false;
+      return;
+    }
+    if (estado.rodando) return;
+    estado.modoDebug = true;
+    mostrarPaineisDebug(true);
+    limparConsole();
+    estado.rodando = true;
+    estado.parar = false;
+    atualizarBotoes();
+    setStatus("Executando...", "executando");
+    destacarLinha(null);
+    // `executar()`, e não `iniciar()`: o método da API nova se chama `executar`
+    // e devolve a promessa DA SESSÃO INTEIRA. A versão anterior chamava
+    // `iniciar()`, que não existe mais — o `TypeError` subia antes de
+    // `estado.sessao` ser preenchido, e `estado.rodando` ficava ligado para
+    // sempre. Era esse o travamento: um throw síncrono deixava a UI convicta de
+    // que havia execução em curso, com todos os botões desabilitados e nenhum
+    // caminho para desligar isso.
+    var promessa;
+    try {
+      promessa = dbg.executar();
+    } catch (e) {
+      estado.rodando = false;
+      estado.retrato = null;
+      consoleErro(String((e && e.message) || e));
+      setStatus("Erro", "erro");
+      atualizarBotoes();
+      atualizarBotoesDebug();
+      return;
+    }
+    estado.sessao = promessa;
+    Promise.resolve(promessa).then(aoTerminarSessao, aoTerminarSessao);
+  }
+  /** O status segue o retrato, para que Pausado/Começar não dependam do clique. */
+  function atualizarStatusDebug(retrato) {
+    if (!retrato) return;
+    if (retrato.pausado) {
+      setStatus(
+        "Pausado (linha " + (retrato.executionPoint ? retrato.executionPoint.sourceLine : "?") + ")",
+        "interrompido"
+      );
+      return;
+    }
+    if (retrato.estado === "running" || retrato.estado === "stepping") {
+      setStatus("Executando...", "executando");
+    }
+  }
+  function aoTerminarSessao(r) {
+    estado.rodando = false;
+    estado.sessao = null;
+    esconderEntrada();
+    // `estado.retrato` é zerado junto: sem isto, a UI continuaria desenhando as
+    // variáveis e a linha do ÚLTIMO instante como se a execução estivesse no ar,
+    // e o botão Continuar voltava a parecer disponível para uma sessão morta.
+    estado.retrato = null;
+    estado.linhaMarcada = null;
+    destacarLinha(null);
+    atualizarBotoes();
+    atualizarBotoesDebug();
+    if (r && r.ok) {
+      setStatus("Pronto");
+      return;
+    }
+    if (r && r.interrompido) {
+      consoleErro("-- Execução interrompida --");
+      setStatus("Interrompido", "interrompido");
+      return;
+    }
+    var erro = r && r.erro;
+    if (erro) {
+      var onde = typeof erro.sourceLine === "number" ? "Linha " + erro.sourceLine + ": " : "";
+      consoleErro(onde + String(erro.mensagem || erro.message || erro));
+      setStatus("Erro", "erro");
+      return;
+    }
+    setStatus("Pronto");
+  }
+  /**
+   * Um comando §40 por função: `acao` é o método do `Debug`.
+   *
+   * Os comandos de depuração NÃO devolvem promessa. `passo`, `continuar` e
+   * `parar` devolvem booleano — a promessa pendente é a da SESSÃO, uma só, criada
+   * em `executar()`. A versão anterior tratava cada comando como se devolvesse
+   * uma promessa nova e encadeava `.then()` nisso: `false.then` é `TypeError`,
+   * o throw saía do clique DEPOIS de `estado.rodando = true`, e o resultado era o
+   * botão Passo travando o programa e todos os controles morrendo junto, sem
+   * caminho para recuperar.
+   *
+   * A UI se atualiza pelo `aoMudar`, que dispara a cada mudança de estado.
+   */
+  function comandoDebug(acao, argumento) {
+    var dbg = sessaoDebug();
+    if (!dbg) return;
+    if (estado.modoDebug) mostrarPaineisDebug(true);
+    var r = dbg[acao](argumento);
+    if (r === false && acao !== "parar") {
+      // O runtime recusou o comando (não está pausado, sessão encerrada). Não é
+      // erro, mas o aluno precisa de retorno: sem isto, apertar Passo fora de
+      // uma pausa não dá nenhuma pista do porquê.
+      setStatus("Nada a avançar: a execução não está pausada", "interrompido");
+    }
+    atualizarBotoesDebug();
+  }
+  function mostrarPaineisDebug(visivel) {
+    var caixa = $("dbg-caixa");
+    if (caixa) caixa.hidden = !visivel;
+  }
+  function montarPaineisDebug() {
+    if ($("dbg-caixa") || !window.VGPlay || !window.VGPlay.DebugPanels) return;
+    var tela = $("tela-exercicio");
+    if (!tela) return;
+    var caixa = document.createElement("div");
+    caixa.id = "dbg-caixa";
+    caixa.className = "dbg-painel-caixa";
+    caixa.hidden = true;
+    tela.appendChild(caixa);
+    // `criar` só monta o que o chamador pedir: nada é criado no carregamento do
+    // módulo, e `doc` é injetado para o mesmo código servir no browser e no teste.
+    painelDebug = window.VGPlay.DebugPanels.criar({
+      doc: document,
+      aoEscolherFrame: function (profundidade) {
+        if (estado.debug) estado.debug.focar(profundidade);
+      },
+      aoEscolherLinha: function (linha) {
+        centralizarLinha(linha);
+      }
+    });
+    caixa.appendChild(painelDebug.raiz);
+  }
+  function criarBotoesDebug() {
+    var botoes = document.querySelector(".botoes");
+    if (!botoes || $("btn-debug")) return;
+    // §40 — o botão "Debug" fica SEMPRE visível: é por ele que se liga o modo
+    // depuração na primeira vez. Sem breakpoint e sem modo ligado, o resto do
+    // grupo some — quem não depura não paga por nenhum deles.
+    var debug = document.createElement("button");
+    debug.id = "btn-debug";
+    debug.type = "button";
+    debug.className = "btn tonal";
+    debug.setAttribute("aria-pressed", "false");
+    debug.title = "Alterna o modo de depuração (passo a passo, breakpoints e painéis)";
+    var iconeDebug = document.createElement("span");
+    iconeDebug.className = "btn-icone";
+    iconeDebug.setAttribute("aria-hidden", "true");
+    debug.appendChild(iconeDebug);
+    debug.appendChild(document.createTextNode("Debug"));
+    botoes.insertBefore(debug, $("btn-restaurar"));
+
+    var grupo = document.createElement("div");
+    grupo.className = "btn-group";
+    grupo.setAttribute("role", "group");
+    grupo.setAttribute("aria-label", "Comandos de depuração");
+    grupo.id = "botoes-debug";
+    grupo.hidden = true;
+    var modelos = [
+      ["btn-continuar", "Continuar", "tonal"],
+      ["btn-passo", "Passo \u25b8", "outlined"],
+      ["btn-dentro", "Passo \u21a7", "outlined"],
+      ["btn-fora", "Passo \u21a5", "outlined"],
+      ["btn-limpar-bp", "Limpar bp", "texto"]
+    ];
+    for (var i = 0; i < modelos.length; i++) {
+      var b = document.createElement("button");
+      b.id = modelos[i][0];
+      b.type = "button";
+      b.className = "btn " + modelos[i][2];
+      b.title = modelos[i][1];
+      var icone = document.createElement("span");
+      icone.className = "btn-icone";
+      icone.setAttribute("aria-hidden", "true");
+      b.appendChild(icone);
+      b.appendChild(document.createTextNode(modelos[i][1]));
+      grupo.appendChild(b);
+    }
+    botoes.appendChild(grupo);
+    debug.addEventListener("click", function () {
+      estado.modoDebug = !estado.modoDebug;
+      atualizarBotoesDebug();
+      if (estado.modoDebug) {
+        mostrarPaineisDebug(true);
+        var dbg = sessaoDebug();
+        if (dbg && painelDebug) painelDebug.atualizar(dbg.estadoDebug());
+      } else {
+        mostrarPaineisDebug(false);
+      }
+    });
+    $("btn-continuar").addEventListener("click", function () {
+      comandoDebug("continuar");
+    });
+    $("btn-passo").addEventListener("click", function () {
+      if (!window.VG || !window.VG.Debugger) return;
+      comandoDebug("passo", window.VG.Debugger.PASSO.SOBRE);
+    });
+    $("btn-dentro").addEventListener("click", function () {
+      if (!window.VG || !window.VG.Debugger) return;
+      comandoDebug("passo", window.VG.Debugger.PASSO.DENTRO);
+    });
+    $("btn-fora").addEventListener("click", function () {
+      if (!window.VG || !window.VG.Debugger) return;
+      comandoDebug("passo", window.VG.Debugger.PASSO.FORA);
+    });
+    $("btn-limpar-bp").addEventListener("click", function () {
+      // `limparBreakpoints()`, e não `limpar()`: o método antigo foi removido,
+      // e esta linha era o que estourava ao limpar todos os breakpoints.
+      if (estado.debug) estado.debug.limparBreakpoints();
+      marcarGutter();
+      atualizarBotoesDebug();
+    });
+  }
+  function atualizarBotoesDebug() {
+    var dbg = estado.debug;
+    // O retrato é a fonte da verdade. A versão anterior olhava `debug.status`,
+    // campo que não existe na API: o estado vive em `retrato.estado`, e ler um
+    // campo inexistente dava `undefined`, então `pausado` era SEMPRE falso e
+    // todo botão ficava habilitado fora de hora — inclusive o Passo, que é
+    // exatamente o botão que trava o aluno quando mente sobre o estado.
+    var r = estado.retrato;
+    var pausado = !!(r && r.pausado);
+    var executando = !!(r && (r.estado === "running" || r.estado === "stepping"));
+    var temBp = !!dbg && dbg.linhas().length > 0;
+    var botaoDebug = $("btn-debug");
+    if (botaoDebug) {
+      botaoDebug.classList.toggle("tonal", !estado.modoDebug);
+      botaoDebug.classList.toggle("primario", estado.modoDebug);
+      botaoDebug.setAttribute("aria-pressed", estado.modoDebug ? "true" : "false");
+    }
+    var grupo = $("botoes-debug");
+    if (!grupo) return;
+    grupo.hidden = !(estado.modoDebug || temBp);
+    // `parado` é o que trava a execução, não `rodando`. Durante uma pausa a
+    // sessão está VIVA, e Continuar precisa ficar clicável — foi o inverso disso
+    // que deixava o aluno preso numa pausa sem botão para sair.
+    $("btn-continuar").disabled = !pausado;
+    $("btn-passo").disabled = !pausado;
+    $("btn-dentro").disabled = !pausado;
+    $("btn-fora").disabled = !pausado;
+    $("btn-limpar-bp").disabled = !temBp;
+    if (executando) {
+      $("btn-continuar").disabled = true;
+      $("btn-passo").disabled = true;
+      $("btn-dentro").disabled = true;
+      $("btn-fora").disabled = true;
+    }
+  }
   function restaurar() {
     if (!estado.exercicio) return;
+    pararSeRodando();
+    // "Restaurar original" devolve o código do exercício, então a sessão de
+    // depuração tem que morrer junto: senão ela fica com o texto que o aluno
+    // tinha editado, e o próximo Passo avança um programa que saiu da tela.
+    limparSessaoDebug();
     $("editor").value =
       typeof estado.exercicio.codigo === "string" ? estado.exercicio.codigo : "";
+    destacarLinha(null);
     realcar();
     $("editor").scrollTop = 0;
     $("editor").scrollLeft = 0;
     sincronizaScroll();
+    setStatus("Pronto");
   }
   function sincronizaScroll() {
     var pre = $("editor-pre");
     pre.scrollTop = $("editor").scrollTop;
     pre.scrollLeft = $("editor").scrollLeft;
+    rolarGutter();
+    posicionarLinhaAtual();
   }
+
+  // ===========================================================================
+  // §41/§42 — gutter de breakpoints e destaque da linha atual.
+  //
+  // O gutter é criado por JS e inserido DENTRO de `.editor-wrap`, ao lado de
+  // `#editor-pre` e `#editor`. Não podia vir do `index.html` porque o gutter é
+  // uma linha por linha do código, e o número delas muda a cada tecla.
+  //
+  // As duas invariantes que não podem quebrar:
+  //   · o gutter rola JUNTO com o código (mesma linha visual, sempre);
+  //   · a altura da linha do gutter é a MESMA caixa de linha do código
+  //     (`--md-ext-code-line-box`), e não a linha de base da fonte menor do
+  //     gutter — se divergirem, os números saem de etiqueta depois da terceira
+  //     linha e o clique marca a linha errada.
+  // ===========================================================================
+  function criarGutter() {
+    var wrap = document.querySelector(".editor-wrap");
+    if (!wrap || $("editor-gutter")) return;
+    var gutter = document.createElement("div");
+    gutter.id = "editor-gutter";
+    gutter.className = "editor-gutter";
+    gutter.setAttribute("role", "group");
+    gutter.setAttribute("aria-label", "Breakpoints: clique no número de uma linha para marcar ou desmarcar");
+    wrap.insertBefore(gutter, wrap.firstChild);
+
+    var atual = document.createElement("div");
+    atual.id = "editor-linha-atual";
+    atual.className = "editor-linha-atual";
+    atual.hidden = true;
+    wrap.insertBefore(atual, gutter.nextSibling);
+
+    gutter.addEventListener("click", function (ev) {
+      var alvo = ev.target && ev.target.closest ? ev.target.closest(".editor-gutter-linha") : null;
+      if (!alvo) return;
+      alternarBreakpoint(Number(alvo.getAttribute("data-linha")));
+    });
+  }
+  // Cada linha do gutter é um `<button>` com `data-linha`: a margem é pequena e
+  // um `div` sem foco não seria alcançável pelo teclado. O botão inteiro é o
+  // alvo clicável, não só o número.
+  function totalDeLinhas(texto) {
+    return String(texto).split("\n").length;
+  }
+  /**
+   * Reconstroi o gutter quando a QUANTIDADE de linhas muda, e só marca/desmarca
+   * quando ela não muda. Um botão por linha a cada tecla seria centenas de nós
+   * recriados por caractere digitado.
+   *
+   * O `padding-bottom` do gutter é o mesmo do editor DE PROPÓSITO: sem ele, a
+   * altura rolável do gutter é menor que a do `textarea`, `scrollTop` satura
+   * antes da hora e a coluna de números sai de etiqueta na segunda dobra de
+   * rolagem. `rolarGutter` depende disso.
+   */
+  function sincronizarGutter() {
+    var gutter = $("editor-gutter");
+    if (!gutter) return;
+    var linhas = totalDeLinhas($("editor").value);
+    if (linhas !== estado.linhasGutter) {
+      estado.linhasGutter = linhas;
+      var html = "";
+      for (var i = 1; i <= linhas; i++) html += '<button type="button" class="editor-gutter-linha" data-linha="' + i + '" aria-pressed="false" aria-label="Breakpoint na linha ' + i + '">' + i + "</button>";
+      gutter.innerHTML = html;
+      rolarGutter();
+    }
+    marcarGutter();
+  }
+  /**
+   * Rola a coluna de números junto com o código.
+   *
+   * `overflow: hidden` no CSS, e não `auto`: a caixa continua rolável por script
+   * (é o truque padrão), e assim o gutter nunca mostra uma barra de rolagem
+   * própria para roubar a attention de quem está lendo código.
+   */
+  function rolarGutter() {
+    var gutter = $("editor-gutter");
+    if (gutter) gutter.scrollTop = $("editor").scrollTop;
+  }
+  /** Aplica a sessão de depuração (linhas marcadas + linha atual) no gutter. */
+  function marcarGutter() {
+    var gutter = $("editor-gutter");
+    if (!gutter) return;
+    var botoes = gutter.querySelectorAll(".editor-gutter-linha");
+    var debug = estado.debug;
+    for (var i = 0; i < botoes.length; i++) {
+      var b = botoes[i];
+      var n = Number(b.getAttribute("data-linha"));
+      var marcado = !!(debug && debug.tem(n));
+      b.classList.toggle("com-breakpoint", marcado);
+      b.setAttribute("aria-pressed", marcado ? "true" : "false");
+      b.classList.toggle("atual", n === estado.linhaMarcada);
+    }
+  }
+  /**
+   * §41 — a caixa do destaque, na posição da linha corrente DENTRO da área
+   * visível. Só o `top` muda; a altura é a caixa de linha do próprio `textarea`.
+   */
+  function posicionarLinhaAtual() {
+    var caixa = $("editor-linha-atual");
+    if (!caixa || estado.linhaMarcada === null) return;
+    // A conta é feita em JS, e não em `calc()` com `--md-ext-code-line-height`,
+    // porque esse token é um multiplicador (1.5) e não um comprimento: em
+    // `calc` a multiplicação seria número × número × comprimento, que só
+    // resolve enquanto o token continuar sendo adimensional.
+    var ed = $("editor");
+    var estilo = window.getComputedStyle(ed);
+    var alturaLinha = parseFloat(estilo.lineHeight);
+    if (!isFinite(alturaLinha) || alturaLinha <= 0) alturaLinha = 21;
+    var padTop = parseFloat(estilo.paddingTop) || 0;
+    var topo = padTop + (estado.linhaMarcada - 1) * alturaLinha - ed.scrollTop;
+    caixa.hidden = false;
+    caixa.style.top = Math.round(topo) + "px";
+    caixa.style.height = alturaLinha + "px";
+  }
+  /** §41 — destaca a linha corrente, e rola o editor até ela. */
+  function destacarLinha(linha) {
+    estado.linhaMarcada = typeof linha === "number" ? linha : null;
+    var caixa = $("editor-linha-atual");
+    if (!caixa) return;
+    if (estado.linhaMarcada === null) {
+      caixa.hidden = true;
+      marcarGutter();
+      return;
+    }
+    posicionarLinhaAtual();
+    marcarGutter();
+  }
+  /** Rola o editor só quando a linha está fora da vista (§41, "quando fizer sentido"). */
+  function centralizarLinha(linha) {
+    if (typeof linha !== "number") return;
+    var ed = $("editor");
+    var estilo = window.getComputedStyle(ed);
+    var alturaLinha = parseFloat(estilo.lineHeight) || 21;
+    var topo = (parseFloat(estilo.paddingTop) || 0) + (linha - 1) * alturaLinha;
+    var visivel = ed.clientHeight - alturaLinha;
+    if (topo < ed.scrollTop || topo > ed.scrollTop + visivel) {
+      ed.scrollTop = Math.max(0, topo - ed.clientHeight / 2);
+      sincronizaScroll();
+    }
+  }
+  function alternarBreakpoint(linha) {
+    if (!linha || !isFinite(linha)) return;
+    var dbg = sessaoDebug();
+    if (!dbg) return;
+    dbg.alternar(linha);
+    marcarGutter();
+    // Marcar um breakpoint já é intenção de depurar: os painéis entram junto.
+    if (dbg.linhas().length > 0) {
+      mostrarPaineisDebug(true);
+      if (painelDebug) painelDebug.atualizar(dbg.estadoDebug());
+    }
+    atualizarBotoesDebug();
+  }
+  var TAB_ESPACOS = 4;
+  var BLOCO_ESPACOS = "    ";
+  var SELETOR_FOCAVEIS =
+    "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]";
+  var DICA_TAB =
+    "Tab insere 4 espaços. Shift+Tab recua a indentação. Esc tira o foco do editor e devolve o Tab à navegação.";
+  var DICA_TAB_LIVRE =
+    "Tab liberado: Tab agora move o foco entre os controles da página. O editor volta a indentar quando receber o foco de novo.";
+  function limiteLinha(txt, pos) {
+    var ini = pos <= 0 ? 0 : txt.lastIndexOf("\n", pos - 1) + 1;
+    var fim = txt.indexOf("\n", pos);
+    if (fim < 0) fim = txt.length;
+    return { ini: ini, fim: fim };
+  }
+  function trocarTexto(valor, ini, fim) {
+    var el = $("editor");
+    var st = el.scrollTop;
+    var sl = el.scrollLeft;
+    el.value = valor;
+    el.setSelectionRange(ini, fim);
+    realcar();
+    el.scrollTop = st;
+    el.scrollLeft = sl;
+    sincronizaScroll();
+  }
+  function indentar() {
+    var el = $("editor");
+    var txt = el.value;
+    var ini = el.selectionStart;
+    var fim = el.selectionEnd;
+    if (ini === fim) {
+      trocarTexto(
+        txt.slice(0, ini) + BLOCO_ESPACOS + txt.slice(fim),
+        ini + TAB_ESPACOS,
+        ini + TAB_ESPACOS
+      );
+      return;
+    }
+    var primeira = limiteLinha(txt, ini);
+    var ult = limiteLinha(txt, fim);
+    var linhas = txt.slice(primeira.ini, ult.fim).split("\n");
+    var desloca = TAB_ESPACOS * linhas.length;
+    var corpo = "";
+    for (var i = 0; i < linhas.length; i++) {
+      corpo += (i ? "\n" : "") + BLOCO_ESPACOS + linhas[i];
+    }
+    trocarTexto(
+      txt.slice(0, primeira.ini) + corpo + txt.slice(ult.fim),
+      ini + desloca,
+      fim + desloca
+    );
+  }
+  function desindentar() {
+    var el = $("editor");
+    var txt = el.value;
+    var primeira = limiteLinha(txt, el.selectionStart);
+    var ult = limiteLinha(txt, el.selectionEnd);
+    var linhas = txt.slice(primeira.ini, ult.fim).split("\n");
+    var tira = [];
+    var corpo = "";
+    var total = 0;
+    for (var i = 0; i < linhas.length; i++) {
+      var q = 0;
+      while (q < TAB_ESPACOS && linhas[i].charAt(q) === " ") q++;
+      tira.push(q);
+      total += q;
+      corpo += (i ? "\n" : "") + linhas[i].slice(q);
+    }
+    if (!total) return;
+    function novoPos(pos) {
+      var antes = txt.slice(primeira.ini, pos);
+      var k = antes.split("\n").length - 1;
+      var base = primeira.ini + antes.lastIndexOf("\n") + 1;
+      var d = 0;
+      for (var n = 0; n < k; n++) d += tira[n];
+      return base + Math.max(0, pos - base - tira[k]) - d;
+    }
+    trocarTexto(
+      txt.slice(0, primeira.ini) + corpo + txt.slice(ult.fim),
+      novoPos(el.selectionStart),
+      novoPos(el.selectionEnd)
+    );
+  }
+  function proximoFocavel(depois) {
+    var todos = document.querySelectorAll(SELETOR_FOCAVEIS);
+    for (var i = 0; i < todos.length; i++) {
+      if (todos[i] !== depois) continue;
+      for (var j = i + 1; j < todos.length; j++) {
+        if (todos[j].offsetParent !== null) return todos[j];
+      }
+      return null;
+    }
+    return null;
+  }
+  function atualizarIndicadorTab() {
+    var livre = estado.tabLivre;
+    var dica = $("editor-dica-tab");
+    var texto = livre ? DICA_TAB_LIVRE : DICA_TAB;
+    if (dica.textContent !== texto) dica.textContent = texto;
+    var pilula = $("editor-indicador-tab");
+    pilula.hidden = !livre;
+    pilula.textContent = livre ? "Tab livre" : "";
+  }
+  function montarIndicadorTab() {
+    var dica = document.createElement("span");
+    dica.id = "editor-dica-tab";
+    dica.className = "rotulo-visual-oculto";
+    dica.setAttribute("role", "status");
+    dica.setAttribute("aria-live", "polite");
+    var pilula = document.createElement("span");
+    pilula.id = "editor-indicador-tab";
+    pilula.className = "editor-indicador";
+    pilula.setAttribute("aria-hidden", "true");
+    pilula.hidden = true;
+    var botoes = document.querySelector(".botoes");
+    botoes.appendChild(dica);
+    botoes.appendChild(pilula);
+    $("editor").setAttribute("aria-describedby", dica.id);
+    $("editor").setAttribute("aria-keyshortcuts", "Escape");
+    atualizarIndicadorTab();
+  }
+  function liberarTab() {
+    estado.tabLivre = true;
+    atualizarIndicadorTab();
+    var alvo = proximoFocavel($("editor"));
+    $("editor").blur();
+    if (alvo) alvo.focus();
+  }
+  $("editor").addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      liberarTab();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    if (estado.tabLivre) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    e.preventDefault();
+    if (e.shiftKey) desindentar();
+    else indentar();
+  });
+  $("editor").addEventListener("focus", function () {
+    estado.tabLivre = false;
+    atualizarIndicadorTab();
+  });
   $("editor").addEventListener("input", realcar);
   $("editor").addEventListener("scroll", sincronizaScroll);
+  $("editor").addEventListener("click", function () {
+    // O gutter é uma coluna separada: clicar nele não move o cursor do
+    // `textarea`, que é o que se espera de uma margem de depuração.
+    if (estado.linhaMarcada !== null) destacarLinha(estado.linhaMarcada);
+  });
   $("btn-executar").addEventListener("click", executar);
   $("btn-parar").addEventListener("click", parar);
   $("btn-limpar").addEventListener("click", limparConsole);
@@ -498,7 +1243,15 @@
   };
   if (window.EXERCICIOS) window.EXERCICIOS.unshift(PLAYGROUND);
 
+  montarIndicadorTab();
+  // §41–§45: o gutter tem de existir ANTES do primeiro `realcar()` (é o
+  // `realcar` que sincroniza a contagem de linhas dele), e o painel antes do
+  // primeiro `rotear()` (é `abrirExercicio` que o mostra).
+  criarGutter();
+  montarPaineisDebug();
+  criarBotoesDebug();
   atualizarBotoes();
+  atualizarBotoesDebug();
   rotear();
   $("lista-grupos").dataset.rendered = "1";
   document.addEventListener("pointerdown", function (ev) {

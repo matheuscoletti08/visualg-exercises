@@ -1,10 +1,18 @@
-import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync } from "node:fs";
-import { join, dirname, relative, sep } from "node:path";
-import { fileURLToPath } from "node:url";
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const baseDir = join(scriptDir, "..");
+import {
+  readFileSync,
+  writeFileSync,
+  readdirSync,
+  statSync,
+  mkdirSync,
+  join,
+  dirname,
+  relative,
+  sep,
+  PASTAS,
+  decodificar,
+  RAIZ as baseDir,
+} from "./lib/corpus.mjs";
 const saida = join(baseDir, "data", "exercises.js");
-const PASTAS = ["faccat", "manzano"];
 const GRUPOS = [
   { id: "manzano-p25", livro: "Manzano", rotulo: "Manzano — Pág. 25 (sequencial)", ordem: 1 },
   { id: "manzano-p26", livro: "Manzano", rotulo: "Manzano — Pág. 26 (extras)", ordem: 2 },
@@ -19,21 +27,6 @@ const GRUPOS = [
   { id: "exemplos", livro: "Exemplos", rotulo: "Exemplos", ordem: 11 },
 ];
 const RE_DESCRICAO = /^\s*\/\/\s*Descr[^:]{0,12}\s*:\s*(.+)$/im;
-const UFFFD = "\uFFFD";
-const MOJIBAKE = "\u00EF\u00BF\u00BD";
-function decodificar(bytes) {
-  let texto = null;
-  let caiuParaLatin1 = false;
-  try {
-    texto = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-  } catch {
-    texto = new TextDecoder("windows-1252").decode(bytes);
-    caiuParaLatin1 = true;
-  }
-  texto = texto.split(UFFFD).join("?");
-  if (caiuParaLatin1) texto = texto.split(MOJIBAKE).join("?");
-  return texto;
-}
 function grupoDe(id) {
   let m;
   if ((m = /^manzano\/ex(25|26|46|50|66)_/.exec(id))) {

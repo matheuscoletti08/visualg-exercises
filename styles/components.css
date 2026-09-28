@@ -533,12 +533,13 @@ main {
 #tela-exercicio {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(var(--md-ex-editor-min), 1fr) auto;
+  grid-template-rows: auto auto minmax(var(--md-ex-editor-min), 1fr) auto auto;
   grid-template-areas:
     "barra  barra"
     "desc   desc"
     "editor console"
-    "botoes botoes";
+    "botoes botoes"
+    "debug  debug";
   gap: 0 var(--md-sys-spacing-4);
 }
 #tela-exercicio > * {
@@ -706,6 +707,356 @@ main {
   background: var(--md-ext-code-selection);
   color: transparent;
 }
+.editor-indicador {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--md-sys-spacing-1);
+  padding: var(--md-sys-spacing-1) var(--md-sys-spacing-3);
+  font-size: var(--md-sys-type-label-medium-size);
+  line-height: var(--md-sys-type-label-medium-line-height);
+  font-weight: var(--md-sys-type-label-medium-weight);
+  letter-spacing: var(--md-sys-type-label-medium-tracking);
+  color: var(--md-sys-color-on-secondary-container);
+  background: var(--md-sys-color-secondary-container);
+  border-radius: var(--md-sys-shape-corner-full);
+  white-space: nowrap;
+  user-select: none;
+}
+.editor-indicador[hidden] {
+  display: none;
+}
+
+/* =========================================================================
+   §41/§42 — gutter de breakpoints e destaque da linha atual.
+
+   O gutter e o destaque vivem DENTRO de `.editor-wrap`, ao lado de `#editor` e
+   `#editor-pre`, e por isso disputam o mesmo espaço do overlay de realce. A
+   invariante de paridade do editor é absoluta e não foi tocada: o bloco
+   compartilhado `#editor-pre, #editor` acima continua declarando `font`,
+   `padding`, `line-height`, `letter-spacing`, `tab-size` e `white-space`
+   IGUAIS para os dois — nenhuma regra abaixo mexe em `padding`, `font` ou
+   `line-height` de um deles sozinho.
+
+   A reserva de espaço para o gutter é uma REGRA NOVA que lista os DOIS
+   seletores, com o mesmo `padding-left` para os dois. Se alguém escrever
+   `#editor { padding-left: ... }` sozinho mais abaixo, é a quebra da paridade
+   voltando — e o sintoma é o realce dessandando do texto, que é o bug mais
+   irritante de editor que existe.
+   ========================================================================= */
+:root {
+  --md-ext-gutter-width: 46px;
+  --md-ext-gutter-size: 11px;
+  --md-ext-code-current-line: color-mix(in srgb, var(--md-sys-color-primary) 16%, transparent);
+}
+/* Paridade: mesma declaração, mesmos dois seletores, na MESMA ordem do bloco
+   compartilhado. Deslocar a caixa é o que abre espaço para o gutter — e é
+   deslocar a caixa, e não aumentar o `padding`, porque `#editor` é
+   `position: absolute; inset: 0` com `z-index` de input: enquanto ele cobrir a
+   faixa do gutter, o clique na margem chega no `textarea` e não no breakpoint.
+   Como as DUAS caixas deslocam juntas pelo mesmo valor, o texto continua
+   exatamente a `var(--md-ext-code-padding)` da borda interna de cada uma, e o
+   realce continua alinhado com o que se digita. */
+#editor-pre,
+#editor {
+  left: var(--md-ext-gutter-width);
+}
+.editor-linha-atual {
+  position: absolute;
+  left: var(--md-ext-gutter-width);
+  right: 0;
+  height: var(--md-ext-code-line-box);
+  /* A primeira declaração é o piso para quem não conhece `color-mix()`; a
+     segunda usa o token e a substitui quando ele resolve. */
+  background: rgba(103, 80, 164, 0.16);
+  background: var(--md-ext-code-current-line);
+  pointer-events: none;
+  z-index: var(--md-sys-z-behind);
+}
+.editor-linha-atual[hidden] {
+  display: none;
+}
+.editor-gutter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--md-ext-gutter-width);
+  padding: var(--md-ext-code-padding) 4px var(--md-ext-code-padding) var(--md-ext-code-padding);
+  box-sizing: border-box;
+  z-index: var(--md-sys-z-content);
+  overflow: hidden;
+  font-family: var(--md-ext-code-font);
+  font-size: var(--md-ext-gutter-size);
+  line-height: var(--md-ext-code-line-box);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.editor-gutter-linha {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--md-sys-spacing-1);
+  width: 100%;
+  height: var(--md-ext-code-line-box);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  text-align: right;
+  opacity: 0.5;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.editor-gutter-linha:hover,
+.editor-gutter-linha:focus-visible {
+  opacity: 1;
+  background: var(--md-sys-color-surface-container-high);
+  outline: none;
+}
+.editor-gutter-linha:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--md-sys-color-primary);
+}
+.editor-gutter-linha.atual {
+  opacity: 1;
+  color: var(--md-sys-color-primary);
+  font-weight: 700;
+}
+.editor-gutter-linha.com-breakpoint {
+  opacity: 1;
+  color: var(--md-sys-color-error);
+}
+/* O ponto do §42: o breakpoint é o clique na margem, e a margem precisa de um
+   alvo visível e do tamanho de um dedo. */
+.editor-gutter-linha.com-breakpoint::before {
+  content: "";
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: currentColor;
+}
+
+/* =========================================================================
+   §43/§44/§45 — os painéis de debug, numa faixa própria abaixo da barra de
+   botões. Escondidos por padrão: sem breakpoint e sem passo, eles só
+   ocupariam espaço.
+   ========================================================================= */
+.dbg-painel-caixa {
+  grid-area: debug;
+  min-width: 0;
+}
+.dbg-painel-caixa[hidden] {
+  display: none;
+}
+.dbg-raiz {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--md-sys-spacing-3);
+  padding: var(--md-sys-spacing-3);
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: var(--md-sys-shape-corner-medium);
+  box-shadow: var(--md-sys-elevation-1);
+}
+.dbg-fita {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--md-sys-spacing-1) var(--md-sys-spacing-4);
+  margin: 0;
+  padding-bottom: var(--md-sys-spacing-2);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.dbg-fita p {
+  margin: 0;
+  font-size: var(--md-sys-type-label-medium-size);
+  line-height: var(--md-sys-type-label-medium-line-height);
+  letter-spacing: var(--md-sys-type-label-medium-tracking);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.dbg-fita .dbg-status {
+  color: var(--md-sys-color-on-surface);
+  font-weight: 700;
+}
+.dbg-fita .dbg-status[data-status="pausado"] {
+  color: var(--md-sys-color-primary);
+}
+.dbg-fita .dbg-status[data-status="erro"] {
+  color: var(--md-sys-color-error);
+}
+.dbg-fita .dbg-erro {
+  flex: 1 1 100%;
+  color: var(--md-sys-color-error);
+  font-weight: 700;
+}
+.dbg-painel {
+  min-width: 0;
+}
+.dbg-painel h3 {
+  margin: 0 0 var(--md-sys-spacing-2);
+  font-size: var(--md-sys-type-title-small-size);
+  line-height: var(--md-sys-type-title-small-line-height);
+  letter-spacing: var(--md-sys-type-title-small-tracking);
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.dbg-painel-corpo {
+  max-height: 220px;
+  overflow: auto;
+  font-family: var(--md-ext-code-font);
+  font-size: var(--md-ext-gutter-size);
+  line-height: 1.6;
+}
+.dbg-vazio,
+.dbg-nota {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+  font-style: italic;
+}
+.dbg-grupo + .dbg-grupo {
+  margin-top: var(--md-sys-spacing-3);
+}
+.dbg-grupo-titulo {
+  margin: 0 0 var(--md-sys-spacing-1);
+  font-size: inherit;
+  color: var(--md-sys-color-primary);
+}
+.dbg-var {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr);
+  gap: var(--md-sys-spacing-2);
+}
+.dbg-var-nome {
+  color: var(--md-sys-color-on-surface);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dbg-var-tipo {
+  color: var(--md-sys-color-on-surface-variant);
+}
+.dbg-var-valor {
+  color: var(--md-sys-color-on-surface);
+  overflow-wrap: anywhere;
+}
+.dbg-var-itens {
+  padding-inline-start: var(--md-sys-spacing-4);
+  margin-bottom: var(--md-sys-spacing-1);
+}
+.dbg-var-item {
+  display: flex;
+  gap: var(--md-sys-spacing-2);
+}
+.dbg-item-indice {
+  color: var(--md-sys-color-on-surface-variant);
+  min-width: 5ch;
+}
+.dbg-vazio .dbg-item-valor {
+  color: var(--md-sys-color-on-surface-variant);
+  font-style: italic;
+}
+.dbg-pilha {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dbg-frame-btn {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--md-sys-spacing-3);
+  width: 100%;
+  padding: var(--md-sys-spacing-1) var(--md-sys-spacing-2);
+  border: 0;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dbg-frame-btn:hover,
+.dbg-frame-btn:focus-visible {
+  background: var(--md-sys-color-surface-container-high);
+  outline: none;
+}
+.dbg-frame.ativo .dbg-frame-btn {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  font-weight: 700;
+}
+.dbg-frame-nome {
+  overflow-wrap: anywhere;
+}
+.dbg-frame-linha {
+  flex: none;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.dbg-perfil {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dbg-perfil th,
+.dbg-perfil td {
+  padding: 2px var(--md-sys-spacing-2);
+  text-align: left;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.dbg-perfil th {
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 500;
+}
+.dbg-perfil-btn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.dbg-perfil-linha.dbg-ativo {
+  background: var(--md-sys-color-primary-container);
+}
+.dbg-perfil-vazio td {
+  color: var(--md-sys-color-on-surface-variant);
+  font-style: italic;
+}
+.dbg-totais {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 var(--md-sys-spacing-3);
+  margin: var(--md-sys-spacing-2) 0 0;
+}
+.dbg-totais dt {
+  color: var(--md-sys-color-on-surface-variant);
+}
+.dbg-totais dd {
+  margin: 0;
+  color: var(--md-sys-color-on-surface);
+  font-weight: 700;
+}
+.editor-indicador::before {
+  content: "";
+  flex: none;
+  width: var(--md-sys-icon-size-btn);
+  height: var(--md-sys-icon-size-btn);
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11,15h2v2h-2zM11,7h2v6h-2zM3,6h2v2H3zM3,10h2v2H3zM3,14h2v2H3zM3,16h8v2H3zM3,8h8v2H3zM19,9h-6v6h6zM11,5h2v2h-2zM19,3v2h2V3zM13,3v2h-2V3zM19,17h2v2h-2zM17,19h2v2h-2zM15,21h2v2h-2zM19,21h2v2h-2z' fill='%23000'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11,15h2v2h-2zM11,7h2v6h-2zM3,6h2v2H3zM3,10h2v2H3zM3,14h2v2H3zM3,16h8v2H3zM3,8h8v2H3zM19,9h-6v6h6zM11,5h2v2h-2zM19,3v2h2V3zM13,3v2h-2V3zM19,17h2v2h-2zM17,19h2v2h-2zM15,21h2v2h-2zM19,21h2v2h-2z' fill='%23000'/%3E%3C/svg%3E");
+}
 @media (forced-colors: active) {
   #editor {
     color: CanvasText;
@@ -715,7 +1066,44 @@ main {
   #editor-pre {
     display: none;
   }
+  /* §42 — o gutter continua: em `forced-colors` o texto é do próprio
+     `textarea`, e é ele que precisa da margem para marcar o breakpoint. */
+  #editor-pre,
+  #editor {
+    left: var(--md-ext-gutter-width);
+  }
   #editor::selection {
+    background: Highlight;
+    color: HighlightText;
+  }
+  .editor-indicador {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+  .editor-indicador::before {
+    forced-color-adjust: none;
+  }
+  /* §42 — sem cor para o ponto do breakpoint, ele some. */
+  .editor-gutter {
+    border-inline-end: 1px solid CanvasText;
+  }
+  .editor-gutter-linha.com-breakpoint {
+    forced-color-adjust: none;
+    background: CanvasText;
+    color: CanvasText;
+  }
+  .editor-linha-atual {
+    forced-color-adjust: none;
+    outline: 1px solid Highlight;
+  }
+  .dbg-raiz,
+  .dbg-painel-corpo {
+    border: 1px solid CanvasText;
+  }
+  .dbg-frame.ativo .dbg-frame-btn,
+  .dbg-perfil-linha.dbg-ativo {
+    forced-color-adjust: none;
     background: Highlight;
     color: HighlightText;
   }
@@ -1263,13 +1651,15 @@ main {
       auto
       minmax(var(--md-ex-editor-min), 1fr)
       auto
-      minmax(var(--md-ex-console-min), 1fr);
+      minmax(var(--md-ex-console-min), 1fr)
+      auto;
     grid-template-areas:
       "barra"
       "desc"
       "editor"
       "botoes"
-      "console";
+      "console"
+      "debug";
   }
   #ex-badge { margin-inline-start: 0; }
   .botoes > .btn.texto { margin-inline-start: 0; }
